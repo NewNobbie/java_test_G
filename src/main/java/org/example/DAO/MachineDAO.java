@@ -98,6 +98,45 @@ public class MachineDAO extends BaseDAO{
         return availableMachines;
     }
 
+    public void saveMachines(List<Machine> machines) {
+        String sql = "INSERT INTO Machines (model, serial_number, status) VALUES (?, ?, ?)";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            for (Machine machine : machines) {
+                // Skip duplicates or invalid entries
+                if (isDuplicateSerialNumber(connection, machine.getSerialNumber())) {
+                    System.out.println("Duplicate serial number found: " + machine.getSerialNumber());
+                    continue;
+                }
+
+                statement.setString(1, machine.getModel());
+                statement.setString(2, machine.getSerialNumber());
+                statement.setString(3, String.valueOf(machine.getStatus()));
+                statement.addBatch();
+            }
+
+            statement.executeBatch(); // Execute batch insert
+            System.out.println("Machines imported successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean isDuplicateSerialNumber(Connection connection, String serialNumber) throws SQLException {
+        String checkSql = "SELECT COUNT(*) FROM Machines WHERE serial_number = ?";
+        try (PreparedStatement checkStatement = connection.prepareStatement(checkSql)) {
+            checkStatement.setString(1, serialNumber);
+            try (ResultSet rs = checkStatement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        }
+        return false;
+    }
+
 
 
     private Machine mapResultSetToMachine(ResultSet rs) throws SQLException {

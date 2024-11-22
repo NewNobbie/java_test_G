@@ -4,6 +4,7 @@ import org.example.controller.MachineController;
 import org.example.entities.Client;
 import org.example.entities.Machine;
 
+import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,7 +22,8 @@ public class MachineView {
             System.out.println("\n=== Machines Menu ===");
             System.out.println("1. Register Machine");
             System.out.println("2. Show All Machines");
-            System.out.println("3. Back to Main Menu");
+            System.out.println("3. Import Machines from excel");
+            System.out.println("4. Back to Main Menu");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -30,7 +32,8 @@ public class MachineView {
             switch (choice) {
                 case 1 -> registerMachine();
                 case 2 -> showAllMachines();
-                case 3 -> { return; }
+                case 3 -> importMachines();
+                case 4 -> { return; }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
         }
@@ -79,5 +82,19 @@ public class MachineView {
                     System.out.println(machine.toString())
             );
         }
+    }
+
+    private void importMachines(){
+        System.out.println("Enter the path to the Excel file: ");
+        String filePath = scanner.nextLine();
+
+        // Validate file path
+        File file = new File(filePath);
+        if (!file.exists() || !file.isFile()) {
+            System.out.println("Invalid file path. Please try again.");
+            return;
+        }
+
+        machineController.importMachinesFromExcel(filePath);
     }
 }

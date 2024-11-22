@@ -15,7 +15,7 @@ public class Machine {
         this.status = status;
     }
 
-    public Machine() {
+    public Machine(String model, String serialNumber, String status) {
     }
 
     public int getId() {

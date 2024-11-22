@@ -3,7 +3,9 @@ package org.example.controller;
 import org.example.DAO.MachineDAO;
 import org.example.entities.Machine;
 import org.example.enums.Status;
+import org.example.helpers.exceptions.Imports.ExcelImporter;
 
+import java.io.IOException;
 import java.util.List;
 
 public class MachineController {
@@ -15,7 +17,7 @@ public class MachineController {
     }
 
     public void addMachine(String model, String serialNumber, String status){
-        Machine newMachine = new Machine();
+        Machine newMachine = new Machine(model, serialNumber, status);
         newMachine.setModel(model);
         newMachine.setSerialNumber(serialNumber);
 
@@ -50,5 +52,19 @@ public class MachineController {
         }
 
         return availableMachines; // Always return the list, even if empty
+    }
+
+    public void importMachinesFromExcel(String filePath) {
+        ExcelImporter importer = new ExcelImporter();
+        MachineDAO machineDAO = new MachineDAO();
+
+        try {
+            List<Machine> machines = importer.importMachinesFromExcel(filePath);
+            int totalMachines = machines.size();
+            machineDAO.saveMachines(machines);
+            System.out.println("Imported " + totalMachines + " machines from " + filePath);
+        } catch (IOException e) {
+            System.err.println("Error reading the Excel file: " + e.getMessage());
+        }
     }
 }
