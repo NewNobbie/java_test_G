@@ -79,7 +79,31 @@ public class RentDAO extends BaseDAO{
                 rs.getInt("client_id"),
                 rs.getInt("machine_id"),
                 rs.getDate("start_date"),
-                rs.getDate("end_date")
+                rs.getDate("end_date"),
+                rs.getBoolean("is_active")
         );
+    }
+
+    public void softDeleteRent(int rentId){
+        String updateRentSql = "UPDATE Rents SET is_active = FALSE WHERE rent_id = ?";
+        String updateMachineSql = "UPDATE Machines SET status = 'available' WHERE machine_id = " +
+                "(SELECT machine_id FROM Rents WHERE rent_id = ?)";
+
+        try (Connection connection = getConnection();
+             PreparedStatement updateRentStatement = connection.prepareStatement(updateRentSql);
+             PreparedStatement updateMachineStatement = connection.prepareStatement(updateMachineSql)) {
+
+            // Mark the rent as inactive
+            updateRentStatement.setInt(1, rentId);
+            updateRentStatement.executeUpdate();
+
+            // Make the machine available again
+            updateMachineStatement.setInt(1, rentId);
+            updateMachineStatement.executeUpdate();
+
+            System.out.println("Rent with ID " + rentId + " has been disable, and the machine is now available.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

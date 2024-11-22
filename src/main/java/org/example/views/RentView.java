@@ -43,7 +43,8 @@ public class RentView {
             System.out.println("1. Register Rent");
             System.out.println("2. Show All Rents");
             System.out.println("3. Show available Machines");
-            System.out.println("4. Back to Main Menu");
+            System.out.println("4. Disable rent");
+            System.out.println("5. Back to Main Menu");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -60,7 +61,8 @@ public class RentView {
                 }
                 case 2 -> showAllRents();
                 case 3 -> showAvailableMachines();
-                case 4 -> { return; }
+                case 4 -> disableRent();
+                case 5 -> { return; }
                 default -> System.out.println("Invalid choice. Please try again.");
             }
         }
@@ -130,5 +132,13 @@ public class RentView {
             System.out.println("Available Machines:");
             availableMachines.forEach(machine -> System.out.println(machine.toString())); // Display each machine
         }
+    }
+
+    private void disableRent(){
+        System.out.print("Enter the ID of the rent to deactivate: ");
+        int rentId = scanner.nextInt();
+
+        rentController.disableRent(rentId);
+        System.out.println("The rent has been deactivated, and the machine is now available.");
     }
 }

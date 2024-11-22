@@ -8,13 +8,15 @@ public class Rent {
     private int machine_id;
     private Date startDate;
     private Date endDate;
+    private Boolean isActive;
 
-    public Rent(int id, int client_id, int machine_id, Date startDate, Date endDate) {
+    public Rent(int id, int client_id, int machine_id, Date startDate, Date endDate, Boolean isActive) {
         this.id = id;
         this.client_id = client_id;
         this.machine_id = machine_id;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.isActive = isActive;
     }
 
     public Rent() {
@@ -68,6 +70,7 @@ public class Rent {
                 ", machine_id=" + machine_id +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
+                ", isActive=" + isActive +
                 '}';
     }
 }

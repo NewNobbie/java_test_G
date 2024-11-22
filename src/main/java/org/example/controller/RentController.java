@@ -86,4 +86,8 @@ public class RentController extends BaseController{
     public int getTotalRents(){
         return this.rentDAO.getTotalRents();
     }
+
+    public void disableRent(int rentId){
+        rentDAO.softDeleteRent(rentId);
+    }
 }
